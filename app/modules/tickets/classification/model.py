@@ -1,4 +1,4 @@
-from app.core.config import TICKET_CLASSIFIER_MODEL_PATH
+from app.core.config import settings
 from app.common.model_loader import load_joblib_model
 from app.common.responses import create_ai_response
 from app.modules.tickets.classification.schemas import TicketClassificationRequest
@@ -13,7 +13,7 @@ def get_model():
     global _model
 
     if _model is None:
-        _model = load_joblib_model(TICKET_CLASSIFIER_MODEL_PATH)
+        _model = load_joblib_model(settings.TICKET_CLASSIFIER_MODEL_PATH)
 
     return _model
 

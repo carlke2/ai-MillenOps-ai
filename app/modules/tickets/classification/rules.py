@@ -1,4 +1,4 @@
-from app.core.config import DEFAULT_MODEL_VERSION
+from app.core.config import settings
 from app.common.text_cleaning import combine_text
 from app.common.responses import create_ai_response
 from app.modules.tickets.classification.schemas import TicketClassificationRequest
@@ -97,5 +97,5 @@ def classify_with_rules(payload: TicketClassificationRequest):
             "alternativeCategories": alternatives
         },
         explanation=f"Matched keywords: {', '.join(best['matchedTerms'])}",
-        model_version=DEFAULT_MODEL_VERSION
+        model_version=settings.DEFAULT_MODEL_VERSION
     )
