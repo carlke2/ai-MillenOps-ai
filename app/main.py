@@ -13,6 +13,7 @@ from app.modules.bookings.no_show.router import router as booking_no_show_router
 from app.modules.rooms.release.router import router as room_release_router
 from app.modules.admin.operations.router import router as admin_operations_router
 from app.modules.nlp.chatbot.router import router as chatbot_router
+from app.modules.anomalies.detection.router import router as anomaly_detection_router
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -88,6 +89,12 @@ app.include_router(
 
 app.include_router(
     chatbot_router,
+    prefix="/v1",
+    dependencies=[Depends(get_api_key)]
+)
+
+app.include_router(
+    anomaly_detection_router,
     prefix="/v1",
     dependencies=[Depends(get_api_key)]
 )
