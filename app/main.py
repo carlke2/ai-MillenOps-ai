@@ -6,6 +6,7 @@ from app.modules.tickets.priority.router import router as ticket_priority_router
 from app.modules.tickets.routing.router import router as ticket_routing_router
 from app.modules.rooms.recommendation.router import router as room_recommendation_router
 from app.modules.nlp.assistant.router import router as meeting_assistant_router
+from app.modules.visitors.reception.router import router as visitor_reception_router
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -39,6 +40,12 @@ app.include_router(
 
 app.include_router(
     meeting_assistant_router,
+    prefix="/v1",
+    dependencies=[Depends(get_api_key)]
+)
+
+app.include_router(
+    visitor_reception_router,
     prefix="/v1",
     dependencies=[Depends(get_api_key)]
 )
