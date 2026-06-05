@@ -1,6 +1,10 @@
-from fastapi import FastAPI, Depends
+import logging
+from fastapi import FastAPI, Depends, Request
+from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.core.security import get_api_key
+
+# Import all routers
 from app.modules.tickets.classification.router import router as ticket_classification_router
 from app.modules.tickets.priority.router import router as ticket_priority_router
 from app.modules.tickets.routing.router import router as ticket_routing_router
@@ -17,101 +21,56 @@ from app.modules.anomalies.detection.router import router as anomaly_detection_r
 from app.modules.workforce.insight.router import router as workforce_insight_router
 from app.modules.facilities.forecasting.router import router as facility_forecasting_router
 
+# Structured Logging Setup
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+logger = logging.getLogger("smart-ops-ai")
+
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION
 )
 
-# Main API Router with global security and /v1 prefix
-app.include_router(
+# Configuration-driven router registration
+ROUTERS = [
     ticket_classification_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     ticket_priority_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     ticket_routing_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     room_recommendation_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     meeting_assistant_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     visitor_reception_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     visitor_matching_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     meeting_reminder_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     booking_no_show_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     room_release_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     admin_operations_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     chatbot_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     anomaly_detection_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
-
-app.include_router(
     workforce_insight_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
+    facility_forecasting_router
+]
 
-app.include_router(
-    facility_forecasting_router,
-    prefix="/v1",
-    dependencies=[Depends(get_api_key)]
-)
+for router in ROUTERS:
+    app.include_router(
+        router,
+        prefix="/v1",
+        dependencies=[Depends(get_api_key)]
+    )
+
+# Global Error Handler
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Global error: {str(exc)}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={
+            "success": False,
+            "error": "Internal Server Error",
+            "message": str(exc) if settings.APP_ENV == "development" else "An unexpected error occurred."
+        }
+    )
 
 @app.get("/health", tags=["System"])
 def health_check():
