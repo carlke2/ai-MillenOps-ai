@@ -10,6 +10,7 @@ from app.modules.visitors.reception.router import router as visitor_reception_ro
 from app.modules.visitors.matching.router import router as visitor_matching_router
 from app.modules.meetings.reminders.router import router as meeting_reminder_router
 from app.modules.bookings.no_show.router import router as booking_no_show_router
+from app.modules.rooms.release.router import router as room_release_router
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -67,6 +68,12 @@ app.include_router(
 
 app.include_router(
     booking_no_show_router,
+    prefix="/v1",
+    dependencies=[Depends(get_api_key)]
+)
+
+app.include_router(
+    room_release_router,
     prefix="/v1",
     dependencies=[Depends(get_api_key)]
 )
