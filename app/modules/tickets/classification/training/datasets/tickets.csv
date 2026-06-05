@@ -1,0 +1,9 @@
+title,description,roomName,bookingLinked,department,finalCategory
+Projector not working,Projector in Boardroom A is not displaying,Boardroom A,true,Operations,AV / Projector
+Wi-Fi is down,Internet is not working in meeting room,Meeting Room 2,true,IT,Network
+AC not cooling,The room is too hot,Boardroom B,false,Admin,HVAC / Facility
+Door access failed,My access card cannot open the boardroom door,Boardroom A,false,Security,Access Control
+Laptop cannot login,User cannot login to company laptop,,false,IT,IT
+Room is dirty,Meeting room has dirty tables and chairs,Meeting Room 1,false,Admin,Workspace / Meeting Room
+Visitor cannot find host,Guest arrived but host cannot be identified,Reception,false,Front Desk,Visitor-related
+General assistance needed,Need help with an operational request,,false,Operations,General Service

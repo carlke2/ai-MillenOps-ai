@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+.env
+app/modules/tickets/classification/models/*.joblib
+.pytest_cache/
